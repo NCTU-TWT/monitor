@@ -1,0 +1,19 @@
+{
+  "author": "Elliot Lai <ellliotlai@gmail.com>",
+  "name": "monitor",
+  "description": "monitor for the sensors",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/NCTU-TWT/monitor.git"
+  },
+  "main": "index.js",
+  "engines": {
+    "node": ">= 0.6"
+  },
+  "dependencies": {
+    "express": "*",
+    "socket.io": "*"
+  },
+  "devDependencies": {}
+}
