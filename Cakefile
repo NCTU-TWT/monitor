@@ -6,12 +6,10 @@ baker = require 'baker'
 #### Baker ####
 
 # open all files in src/ with gedit
-baker.open 'gedit', ['src', 'frontend/index.html']
+baker.open 'gedit', ['src']
 
-baker.watch '.sass', [''], (source) -> "compass compile"
 
-baker.watch '.coffee', ['src/frontend'], (source) -> "coffee -o frontend/scripts #{ source }"
-baker.watch '.coffee', ['src/backend'], (source) -> "coffee -o backend #{ source }"
+baker.watch '.coffee', ['src'], (source) -> "coffee -o #{ source }"
 
 option '-l', '--list', 'list all target liles'
 
