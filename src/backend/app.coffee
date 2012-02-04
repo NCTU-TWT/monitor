@@ -1,5 +1,5 @@
 net             = require 'net'
-{io}            = require './server'
+{io}            = require('express-socket.io-bundle').createStaticServer 4800, 'frontend'
 {EventEmitter}  = require 'events'
 
 # mediator

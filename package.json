@@ -9,12 +9,13 @@
   },
   "main": "index.js",
   "engines": {
-    "node": ">= 0.6"
+    "node": "~ 0.6.6"
     
   },
   "dependencies": {
-    "express": "*",
-    "socket.io": "*"
+    "express": "~ 2.5",
+    "socket.io": "~ 0.7",
+    "express-socket.io-bundle": "git://github.com/NCTU-TWT/express-socket.io-bundle.git"
   },
   "devDependencies": {}
 }
