@@ -1,6 +1,7 @@
 net             = require 'net'
-{io}            = require('express-socket.io-bundle').createStaticServer 4800, 'frontend'
+{io}            = require('express-socket.io-bundle').createStaticServer 3000, '../monitor-client/lib'
 {EventEmitter}  = require 'events'
+
 
 # mediator
 EE = new EventEmitter
@@ -13,9 +14,13 @@ server = net.createServer (client) ->
 server.listen '4900'
 
 
-
 # browser
 io.sockets.on 'connection', (socket) ->
+
+
     EE.on 'data', (data) ->
         console.log data
         socket.emit 'data', data
+        
+        
+

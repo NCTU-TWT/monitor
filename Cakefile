@@ -9,7 +9,7 @@ baker = require 'baker'
 baker.open 'gedit', ['src']
 
 
-baker.watch '.coffee', ['src'], (source) -> "coffee -o #{ source }"
+baker.watch '.coffee', ['src'], (source) -> "coffee -o ./ #{ source }"
 
 option '-l', '--list', 'list all target liles'
 

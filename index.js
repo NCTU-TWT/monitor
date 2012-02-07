@@ -1,7 +1,7 @@
 (function() {
   var EE, EventEmitter, io, net, server;
   net = require('net');
-  io = require('express-socket.io-bundle').createStaticServer(4800, 'frontend').io;
+  io = require('express-socket.io-bundle').createStaticServer(3000, '../monitor-client/lib').io;
   EventEmitter = require('events').EventEmitter;
   EE = new EventEmitter;
   server = net.createServer(function(client) {
