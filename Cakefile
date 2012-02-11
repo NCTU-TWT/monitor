@@ -6,10 +6,8 @@ baker = require 'baker'
 #### Baker ####
 
 # open all files in src/ with gedit
-baker.open 'gedit', ['src']
+baker.open 'gedit', ['lib']
 
-
-baker.watch '.coffee', ['src'], (source) -> "coffee -o ./ #{ source }"
 
 option '-l', '--list', 'list all target liles'
 
