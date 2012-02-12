@@ -34,5 +34,5 @@
 
 回傳一 `EventEmitter`
     
-`chart`, `value`, `error` 三種事件
+`chart`, `value`, `error` 三種事件 
     
