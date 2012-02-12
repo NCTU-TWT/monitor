@@ -3,7 +3,7 @@ var assert      = require('assert'),
     redis       = require('redis'),
     async       = require('async'),
     colors      = require('colors'),
-    StreamDB    = require('../lib/db'); 
+    StreamDB    = require('../lib/streamdb'); 
 
 
 var db = new StreamDB;
