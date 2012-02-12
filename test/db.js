@@ -1,10 +1,12 @@
-var assert  = require('assert'),
-    _       = require('underscore'),
-    redis   = require('redis'),
-    async   = require('async'),
-    colors  = require('colors'),
-    db      = require('../lib/db'); 
+var assert      = require('assert'),
+    _           = require('underscore'),
+    redis       = require('redis'),
+    async       = require('async'),
+    colors      = require('colors'),
+    StreamDB    = require('../lib/db'); 
 
+
+var db = new StreamDB;
 
 db.connect();
 
@@ -95,14 +97,15 @@ var testAddChart = function (callback) {
 
     tests = _.map(charts, function (chart) {
         return function (callback) {
-                    
+            
             db.addChart(chart, function (data) {
 
                 async.parallel([
                     function (callback) {
-                    
+                        
                         client.smembers('monitor:sessions', function (err, data) {  
                             if (err) throw err;                          
+                                              
                             assert.deepEqual(sessions, data, 'new session not added to the session sets'.red);
                             callback();
                         });
@@ -116,7 +119,7 @@ var testAddChart = function (callback) {
                             var ok = _.any(data, function (ch) {
                                 return _.isEqual(ch, chart);
                             });                            
-                            assert(ok, 'new chart not adding to the session');
+                            assert(ok, 'new chart not adding to the session'.red);
                             callback();
                         });
                 }], function () {
@@ -154,7 +157,7 @@ var testGetSession = function (callback) {
                 var ok = sameArray(result, expected);
     
                 
-                assert(ok, 'unable to get the session');            
+                assert(ok, 'unable to get the session'.red);            
                 callback();
             });
             
@@ -184,7 +187,7 @@ var testGetSessions = function (callback) {
                 
                 var ok = sameArray(result, expected);
                 
-                assert(ok, 'unable to get the session sets');            
+                assert(ok, 'unable to get the session sets'.red);            
                 callback();
             });
             
@@ -220,7 +223,7 @@ var testRemoveSession = function (callback) {
                             if (err) throw err;                            
                             var ok = data === 0;
                             
-                            assert(ok, 'stream not removed');  
+                            assert(ok, 'stream not removed'.red);  
                             callback();
                         });   
                     };
@@ -232,7 +235,7 @@ var testRemoveSession = function (callback) {
                         
                         var ok = data === 0;
                         
-                        assert(ok, 'session ID not removed from sessions set');  
+                        assert(ok, 'session ID not removed from sessions set'.red);  
                         callback();
                     })
                 });
@@ -243,7 +246,7 @@ var testRemoveSession = function (callback) {
                         if (err) throw err;                            
                         var ok = data === 0;
                         
-                        assert(ok, 'session not removed');  
+                        assert(ok, 'session not removed'.red);  
                         callback();
                     });
                 });            
@@ -286,7 +289,7 @@ var testAddStream = function (callback) {
                         });
                     });
                     
-                    assert(ok, 'data not in stream');            
+                    assert(ok, 'data not in stream'.red);            
                     callback();
                 })                
             });
