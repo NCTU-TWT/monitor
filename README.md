@@ -28,11 +28,11 @@
 
 ## stream.js
 
-    將從 sensor 送來的資料解析並抽象化成串流
+將從 sensor 送來的資料解析並抽象化成串流
     
 ### createStream([port=4900])
 
-    回傳一 `EventEmitter`
+回傳一 `EventEmitter`
     
-    `chart`, `value`, `error` 三種事件
+`chart`, `value`, `error` 三種事件
     
