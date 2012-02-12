@@ -64,26 +64,17 @@ var sessions = [
     'session02'
 ];
 
-var streams = [
-    { id: 1003, value: 0, time: 1 },
-    { id: 1003, value: 1, time: 2 },
-    { id: 1003, value: 2, time: 3 },
-    { id: 1003, value: 3, time: 4 },
-    { id: 1003, value: 4, time: 5 },
-    { id: 1003, value: 5, time: 6 },
-    { id: 1004, value: 10, time: 11 },
-    { id: 1004, value: 11, time: 12 },
-    { id: 1004, value: 12, time: 13 },
-    { id: 1004, value: 13, time: 14 },
-    { id: 1004, value: 14, time: 15 },
-    { id: 1004, value: 15, time: 16 },
-    { id: 1005, value: 30, time: 21 },
-    { id: 1005, value: 31, time: 22 },
-    { id: 1005, value: 32, time: 23 },
-    { id: 1005, value: 33, time: 24 },
-    { id: 1005, value: 34, time: 25 },
-    { id: 1005, value: 35, time: 26 },
-]
+var streams = (function (times) {
+    var list = [];
+    for (var i = 0; i < times; i++) {
+        list.push({
+            id: 2000 + i % 3,
+            value: i,
+            time: i
+        });
+    }
+    return list;
+})(5);
 
 var sameArray = function (a, b) {
     return _.all(a, function (aElem) {
@@ -155,9 +146,7 @@ var testGetSession = function (callback) {
         return function (callback) {
             
             db.getSession(chart.session, function (result) {
-            
-                result = _.map(result, JSON.parse);
-                
+                            
                 expected = _.filter(charts, function (elem) {
                     return elem.session === chart.session;
                 })
@@ -220,29 +209,46 @@ var testRemoveSession = function (callback) {
         return function (callback) {
             
             db.removeSession(chart.session, function (result) {
-            
-                async.parallel([
-                    function (callback) {
-                        client.sismember('monitor:sessions', chart.session, function (err, data) {                
-                            if (err) throw err;
-                            
-                            var ok = data === 0;
-                            
-                            assert(ok, 'session ID not removed from sessions set');  
-                            callback();
-                        })
-                    },
-                    function (callback) {
                 
-                        client.exists('monitor:sessions:' + chart.session, function (err, data) {                
+                var streamList = [];
+                
+                streamList = streamList.concat(_.values(chart.value));
+                
+                var tests = _.map(streamList, function (streamID) {
+                    return function (callback) {                        
+                        client.exists('monitor:streams:' + streamID, function (err, data) {            
                             if (err) throw err;                            
                             var ok = data === 0;
                             
-                            assert(ok, 'session not removed');  
+                            assert(ok, 'stream not removed');  
                             callback();
-                        });
-                    }                    
-                ], function (err, result) {
+                        });   
+                    };
+                });
+            
+                tests.push(function (callback) {
+                    client.sismember('monitor:sessions', chart.session, function (err, data) {                
+                        if (err) throw err;
+                        
+                        var ok = data === 0;
+                        
+                        assert(ok, 'session ID not removed from sessions set');  
+                        callback();
+                    })
+                });
+            
+                tests.push(function (callback) {
+                
+                    client.exists('monitor:sessions:' + chart.session, function (err, data) {                
+                        if (err) throw err;                            
+                        var ok = data === 0;
+                        
+                        assert(ok, 'session not removed');  
+                        callback();
+                    });
+                });            
+            
+                async.parallel(tests, function (err, result) {
                     callback();
                 });
             
@@ -273,7 +279,6 @@ var testAddStream = function (callback) {
                     
                     data = _.map(data, JSON.parse);
                     
-                    console.log('ha');
                     var ok = _.any(data, function (elem) {
                         return _.isEqual(elem, {
                             value: stream.value,
