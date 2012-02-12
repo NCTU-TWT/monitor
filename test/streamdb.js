@@ -104,9 +104,13 @@ var testAddChart = function (callback) {
                     function (callback) {
                         
                         client.smembers('monitor:sessions', function (err, data) {  
-                            if (err) throw err;                          
-                                              
-                            assert.deepEqual(sessions, data, 'new session not added to the session sets'.red);
+                            if (err) throw err;    
+                            
+                            var ok = _.all(sessions, function (elem) {
+                                return _.contains(data, elem);
+                            });
+                            
+                            assert(ok, 'new session not added to the session sets'.red);
                             callback();
                         });
                         
@@ -182,10 +186,13 @@ var testGetSessions = function (callback) {
         return function (callback) {
             
             db.getSessions(function (result) {
-            
-                expected = sessions;
                 
-                var ok = sameArray(result, expected);
+                var ok = _.all(charts, function (chart) {
+                
+                    return _.any(_.flatten(result), function (elem) {
+                        return _.isEqual(chart, elem);
+                    });
+                });
                 
                 assert(ok, 'unable to get the session sets'.red);            
                 callback();
@@ -196,6 +203,35 @@ var testGetSessions = function (callback) {
 
     async.parallel(tests, function (err, result) {
         console.log('getSessions ' + 'pass'.green)       
+        callback();
+    });
+    
+};
+
+
+// getSessionList
+var testGetSessionList = function (callback) {
+
+    tests = _.map(charts, function (chart) {
+        return function (callback) {
+            
+            db.getSessionList(function (result) {
+            
+                expected = sessions;
+    
+                var ok = _.all(expected, function (elem) {
+                    return _.contains(result, elem);
+                });
+                
+                assert(ok, 'unable to get the session list'.red);            
+                callback();
+            });
+            
+        };
+    });
+
+    async.parallel(tests, function (err, result) {
+        console.log('getSessionList ' + 'pass'.green)       
         callback();
     });
     
@@ -312,6 +348,7 @@ async.series([
     testAddStream,
     testGetSession,
     testGetSessions,
+    testGetSessionList,
     testRemoveSession
 ], function (err, result) {
     
