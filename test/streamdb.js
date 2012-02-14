@@ -2,13 +2,14 @@ var assert      = require('assert'),
     _           = require('underscore'),
     redis       = require('redis'),
     async       = require('async'),
-    colors      = require('colors'),
+    colors      = require('colors');
     StreamDB    = require('../lib/streamdb'); 
 
 
 var db = new StreamDB;
 
 db.connect();
+db.use('test');
 
 var client = redis.createClient(6379, '61.222.87.71');
 client.on('error', function (err) {
@@ -103,7 +104,7 @@ var testAddChart = function (callback) {
                 async.parallel([
                     function (callback) {
                         
-                        client.smembers('monitor:sessions', function (err, data) {  
+                        client.smembers('test:sessions', function (err, data) {  
                             if (err) throw err;    
                             
                             var ok = _.all(sessions, function (elem) {
@@ -117,7 +118,7 @@ var testAddChart = function (callback) {
                     },
                     function (callback) {
                 
-                        client.smembers('monitor:sessions:' + chart.session, function (err, data) { 
+                        client.smembers('test:sessions:' + chart.session, function (err, data) { 
                             if (err) throw err; 
                             data = _.map(data, JSON.parse);  
                             var ok = _.any(data, function (ch) {
@@ -255,7 +256,7 @@ var testRemoveSession = function (callback) {
                 
                 var tests = _.map(streamList, function (streamID) {
                     return function (callback) {                        
-                        client.exists('monitor:streams:' + streamID, function (err, data) {            
+                        client.exists('test:streams:' + streamID, function (err, data) {            
                             if (err) throw err;                            
                             var ok = data === 0;
                             
@@ -266,7 +267,7 @@ var testRemoveSession = function (callback) {
                 });
             
                 tests.push(function (callback) {
-                    client.sismember('monitor:sessions', chart.session, function (err, data) {                
+                    client.sismember('test:sessions', chart.session, function (err, data) {                
                         if (err) throw err;
                         
                         var ok = data === 0;
@@ -278,7 +279,7 @@ var testRemoveSession = function (callback) {
             
                 tests.push(function (callback) {
                 
-                    client.exists('monitor:sessions:' + chart.session, function (err, data) {                
+                    client.exists('test:sessions:' + chart.session, function (err, data) {                
                         if (err) throw err;                            
                         var ok = data === 0;
                         
@@ -313,7 +314,7 @@ var testAddStream = function (callback) {
             db.addStream(stream, function (result) {
             
             
-                client.lrange('monitor:streams:' + stream.id, 0, -1, function (err, data) {                
+                client.lrange('test:streams:' + stream.id, 0, -1, function (err, data) {                
                     if (err) throw err;
                     
                     data = _.map(data, JSON.parse);
