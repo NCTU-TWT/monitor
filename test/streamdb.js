@@ -238,6 +238,36 @@ var testGetSessionList = function (callback) {
     
 };
 
+// getStream
+var testGetStream = function (callback) {
+
+    tests = _.map(streams, function (stream) {
+        return function (callback) {
+            
+            db.getStream(stream.id, function (result) {
+                
+            
+                var ok = _.all(result, function (resultElem) {
+                    return _.any(streams, function (expectedElem) {
+                        return _.isEqual(resultElem, {
+                            value: expectedElem.value,
+                            time: expectedElem.time
+                        });
+                    });                        
+                });
+                assert(ok, 'unable to get the stream'.red);     
+                callback();
+            });
+            
+        };
+    });
+
+    async.parallel(tests, function (err, result) {
+        console.log('getStream ' + 'pass'.green)       
+        callback();
+    });
+    
+};
 
 
 
@@ -350,6 +380,7 @@ async.series([
     testGetSession,
     testGetSessions,
     testGetSessionList,
+    testGetStream,
     testRemoveSession
 ], function (err, result) {
     
