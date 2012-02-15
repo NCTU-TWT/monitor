@@ -6,7 +6,7 @@ baker = require 'baker'
 #### Baker ####
 
 # open all files in src/ with gedit
-baker.open 'gedit', ['lib']
+baker.open 'gedit', ['lib', '!server.js']
 
 
 option '-l', '--list', 'list all target liles'
