@@ -22,17 +22,3 @@
     monitor/            
     monitor-client/
     
-# lib/
-
-`lib/` 中模組的簡介
-
-## stream.js
-
-將從 sensor 送來的資料解析並抽象化成串流
-    
-### createStream([port=4900])
-
-回傳一 `EventEmitter`
-    
-`chart`, `value`, `error` 三種事件 
-    
