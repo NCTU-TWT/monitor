@@ -14,7 +14,7 @@
   "dependencies": {
     "express": "~ 2.5",
     "socket.io": "~ 0.8",
-    "monitor-stream": "git://github.com/NCTU-TWT/monitor-stream.git"
+    "underscore": "~ 1.3.1"
   },
   "devDependencies": {}
 }
